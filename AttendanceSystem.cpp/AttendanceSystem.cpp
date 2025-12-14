@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -25,17 +26,28 @@ struct AttendanceRecord {
     bool isCheckedOut;
 };
 
-// Sample employees - you can add more as needed
+// Sample employees - exactly as provided in your data
 const vector<Employee> sampleEmployees = {
-    {"EMP001", "John Smith"},
-    {"EMP002", "Sarah Johnson"},
-    {"EMP003", "Michael Brown"},
-    {"EMP004", "Emily Davis"},
-    {"EMP005", "David Wilson"},
-    {"EMP006", "Lisa Anderson"},
-    {"EMP007", "Robert Taylor"},
-    {"EMP008", "Jennifer Martinez"}
+    {"EMP001", "mahmoud"},
+    {"EMP002", "Sarah "},
+    {"EMP003", "lamine"},
+    {"EMP004", "nour"},
+    {"EMP005", "hossamelden"},
+    {"EMP006", "mona"},
+    {"EMP007", "ahmed"},
+    {"EMP008", "mohammed"}
 };
+
+// Trim whitespace from both ends of a string
+string trim(const string& str) {
+    size_t start = str.find_first_not_of(" \t\r\n");
+    size_t end = str.find_last_not_of(" \t\r\n");
+    
+    if (start == string::npos || end == string::npos)
+        return "";
+    
+    return str.substr(start, end - start + 1);
+}
 
 // Parse time string to time_t for time difference calculation
 time_t parseTime(const string& timeStr) {
@@ -71,8 +83,9 @@ void displayEmployeeList() {
 
 // Get employee name by ID
 string getEmployeeNameById(const string& id) {
+    string cleanId = trim(id);
     for (const auto& emp : sampleEmployees) {
-        if (emp.id == id) {
+        if (emp.id == cleanId) {
             return emp.name;
         }
     }
@@ -81,14 +94,16 @@ string getEmployeeNameById(const string& id) {
 
 // Get employee ID by name (case-insensitive)
 string getEmployeeIdByName(const string& name) {
-    string lowerName = name;
+    string cleanName = trim(name);
+    string lowerName = cleanName;
     transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
 
     for (const auto& emp : sampleEmployees) {
-        string lowerEmpName = emp.name;
+        string empNameClean = trim(emp.name);
+        string lowerEmpName = empNameClean;
         transform(lowerEmpName.begin(), lowerEmpName.end(), lowerEmpName.begin(), ::tolower);
 
-        if (lowerEmpName.find(lowerName) != string::npos) {
+        if (lowerEmpName.find(lowerName) != string::npos || lowerName.find(lowerEmpName) != string::npos) {
             return emp.id;
         }
     }
@@ -178,28 +193,33 @@ void checkOut() {
     while (getline(inputFile, line)) {
         if (line.empty()) continue;
 
-        // Parse the line
-        size_t pos1 = line.find(',');
-        size_t pos2 = line.find(',', pos1 + 1);
-        size_t pos3 = line.find(',', pos2 + 1);
-        size_t pos4 = line.find(',', pos3 + 1);
-        size_t pos5 = line.find(',', pos4 + 1);
+        // Split the line by commas
+        vector<string> fields;
+        size_t start = 0;
+        size_t end = line.find(',');
 
-        if (pos1 == string::npos || pos2 == string::npos || pos3 == string::npos ||
-            pos4 == string::npos || pos5 == string::npos) {
+        while (end != string::npos) {
+            fields.push_back(line.substr(start, end - start));
+            start = end + 1;
+            end = line.find(',', start);
+        }
+        fields.push_back(line.substr(start));
+
+        // Ensure we have exactly 6 fields
+        if (fields.size() < 6) {
             tempFile << line << endl;
             continue;
         }
 
-        string empId = line.substr(0, pos1);
-        string empName = line.substr(pos1 + 1, pos2 - pos1 - 1);
-        string empDate = line.substr(pos2 + 1, pos3 - pos2 - 1);
-        string checkIn = line.substr(pos3 + 1, pos4 - pos3 - 1);
-        string checkOut = line.substr(pos4 + 1, pos5 - pos4 - 1);
-        string isCheckedOut = line.substr(pos5 + 1);
+        string empId = trim(fields[0]);
+        string empName = trim(fields[1]);
+        string empDate = trim(fields[2]);
+        string checkIn = trim(fields[3]);
+        string checkOut = trim(fields[4]);
+        string isCheckedOut = trim(fields[5]);
 
         // Check if employee ID and date match and employee hasn't checked out yet
-        if (empId == id && empDate == date && isCheckedOut == "0") {
+        if (empId == trim(id) && empDate == trim(date) && isCheckedOut == "0") {
             tempFile << empId << "," << empName << "," << empDate << "," << checkIn << "," << time << ",1" << endl;
             found = true;
         } else {
@@ -230,7 +250,7 @@ void searchEmployee() {
     getline(cin, searchInput);
 
     // Try to find by ID first
-    string employeeId = searchInput;
+    string employeeId = trim(searchInput);
     string employeeName = getEmployeeNameById(employeeId);
 
     // If not found by ID, try by name
@@ -265,23 +285,33 @@ void searchEmployee() {
     while (getline(file, line)) {
         if (line.empty()) continue;
 
-        size_t pos1 = line.find(',');
-        size_t pos2 = line.find(',', pos1 + 1);
-        size_t pos3 = line.find(',', pos2 + 1);
-        size_t pos4 = line.find(',', pos3 + 1);
-        size_t pos5 = line.find(',', pos4 + 1);
+        // Trim the entire line first
+        string cleanLine = trim(line);
+        if (cleanLine.empty()) continue;
 
-        if (pos1 == string::npos || pos2 == string::npos || pos3 == string::npos ||
-            pos4 == string::npos || pos5 == string::npos) {
+        // Split the line by commas
+        vector<string> fields;
+        size_t start = 0;
+        size_t end = cleanLine.find(',');
+
+        while (end != string::npos) {
+            fields.push_back(trim(cleanLine.substr(start, end - start)));
+            start = end + 1;
+            end = cleanLine.find(',', start);
+        }
+        fields.push_back(trim(cleanLine.substr(start)));
+
+        // Ensure we have exactly 6 fields
+        if (fields.size() < 6) {
             continue;
         }
 
-        string empId = line.substr(0, pos1);
-        string empName = line.substr(pos1 + 1, pos2 - pos1 - 1);
-        string date = line.substr(pos2 + 1, pos3 - pos2 - 1);
-        string checkIn = line.substr(pos3 + 1, pos4 - pos3 - 1);
-        string checkOut = line.substr(pos4 + 1, pos5 - pos4 - 1);
-        string isCheckedOut = line.substr(pos5 + 1);
+        string empId = fields[0];
+        string empName = fields[1];
+        string date = fields[2];
+        string checkIn = fields[3];
+        string checkOut = fields[4];
+        string isCheckedOut = fields[5];
 
         if (empId == employeeId) {
             found = true;
@@ -319,6 +349,7 @@ void dailyReport() {
     cout << "\n===== Daily Attendance Report =====\n";
     cout << "Enter date (YYYY-MM-DD): ";
     getline(cin, date);
+    date = trim(date);
 
     ifstream file("attendance.txt");
     if (!file.is_open()) {
@@ -333,23 +364,31 @@ void dailyReport() {
     while (getline(file, line)) {
         if (line.empty()) continue;
 
-        size_t pos1 = line.find(',');
-        size_t pos2 = line.find(',', pos1 + 1);
-        size_t pos3 = line.find(',', pos2 + 1);
-        size_t pos4 = line.find(',', pos3 + 1);
-        size_t pos5 = line.find(',', pos4 + 1);
+        string cleanLine = trim(line);
+        if (cleanLine.empty()) continue;
 
-        if (pos1 == string::npos || pos2 == string::npos || pos3 == string::npos ||
-            pos4 == string::npos || pos5 == string::npos) {
+        // Split the line by commas
+        vector<string> fields;
+        size_t start = 0;
+        size_t end = cleanLine.find(',');
+
+        while (end != string::npos) {
+            fields.push_back(trim(cleanLine.substr(start, end - start)));
+            start = end + 1;
+            end = cleanLine.find(',', start);
+        }
+        fields.push_back(trim(cleanLine.substr(start)));
+
+        if (fields.size() < 6) {
             continue;
         }
 
-        string empId = line.substr(0, pos1);
-        string empName = line.substr(pos1 + 1, pos2 - pos1 - 1);
-        string empDate = line.substr(pos2 + 1, pos3 - pos2 - 1);
-        string checkIn = line.substr(pos3 + 1, pos4 - pos3 - 1);
-        string checkOut = line.substr(pos4 + 1, pos5 - pos4 - 1);
-        string isCheckedOut = line.substr(pos5 + 1);
+        string empId = fields[0];
+        string empName = fields[1];
+        string empDate = fields[2];
+        string checkIn = fields[3];
+        string checkOut = fields[4];
+        string isCheckedOut = fields[5];
 
         if (empDate == date && isCheckedOut == "1") {
             AttendanceRecord record;
@@ -424,23 +463,23 @@ void viewAllEmployees() {
     cout << "Total employees: " << sampleEmployees.size() << endl;
 }
 
-// Initialize sample data (optional)
+// Initialize sample data (optional) - EXACTLY as provided but with 2025 dates
 void initializeSampleData() {
     ofstream file("attendance.txt");
     if (file.is_open()) {
-        // Sample attendance data for demonstration
-        file << "EMP001,John Smith,2024-01-15,08:30,17:15,1\n";
-        file << "EMP002,Sarah Johnson,2024-01-15,09:00,18:00,1\n";
-        file << "EMP003,Michael Brown,2024-01-15,08:45,16:30,1\n";
-        file << "EMP004,Emily Davis,2024-01-15,10:00,19:00,1\n";
-        file << "EMP001,John Smith,2024-01-16,08:15,17:00,1\n";
-        file << "EMP005,David Wilson,2024-01-16,09:30,18:30,1\n";
-        file << "EMP002,Sarah Johnson,2024-01-16,08:50,17:45,1\n";
-        file << "EMP006,Lisa Anderson,2024-01-16,09:15,18:15,1\n";
-        file << "EMP007,Robert Taylor,2024-01-17,08:00,16:45,1\n";
-        file << "EMP008,Jennifer Martinez,2024-01-17,09:45,18:45,1\n";
-        file << "EMP003,Michael Brown,2024-01-17,08:30,17:30,1\n";
-        file << "EMP004,Emily Davis,2024-01-17,10:30,19:30,1\n";
+        // Sample attendance data exactly as provided but with 2025 dates
+        file << "EMP001,mahmoud,2025-12-10,08:30,17:15,1" << endl;
+        file << "EMP002,Sarah ,2025-12-10,09:00,18:00,1" << endl;
+        file << "EMP003,lamine,2025-12-10,08:45,16:30,1" << endl;
+        file << "EMP004,nour,2025-12-10,10:00,19:00,1" << endl;
+        file << "EMP001,mahmoud,2025-12-11,08:15,17:00,1" << endl;
+        file << "EMP005,hossamelden,2025-12-11,09:30,18:30,1" << endl;
+        file << "EMP002,Sarah ,2025-12-11,08:50,17:45,1" << endl;
+        file << "EMP006,mona,2025-12-11,09:15,18:15,1" << endl;
+        file << "EMP007,ahmed,2025-12-12,08:00,16:45,1" << endl;
+        file << "EMP008,mohammed,2025-12-12,09:45,18:45,1" << endl;
+        file << "EMP003,lamine,2025-12-12,08:30,17:30,1" << endl;
+        file << "EMP004,nour,2025-12-12,10:30,19:30,1" << endl;
         file.close();
         cout << "Sample attendance data initialized successfully!\n";
     } else {
