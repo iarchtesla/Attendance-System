@@ -36,13 +36,13 @@ Data is stored in a plain text file (`attendance.txt`) using CSV format for easy
 
 ### Build & Run
 ```bash
-git clone https://github.com/iarchtesla/Attendance-System.git
+git clone https://github.com/iarchtesla/Attendance-System.git    
 cd Attendance-System
 g++ AttendanceSystem.cpp -o attendance
 ./attendance          # Linux/macOS
 attendance.exe        # Windows
 
-git clone https://github.com/iarchtesla/Attendance-System.git
+git clone https://github.com/iarchtesla/Attendance-System.git    
 cd Attendance-System
 g++ AttendanceSystem.cpp -o attendance
 ./attendance          # Linux/macOS
