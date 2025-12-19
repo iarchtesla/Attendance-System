@@ -1,32 +1,37 @@
+
 <div align="center">
 
 # ⏰ Employee Attendance Management System
 
-![Attendance System Banner](https://via.placeholder.com/1000x400/1e40af/ffffff?text=Employee+Attendance+Management+System+in+C%2B%2B)
-
-**A robust, console-based attendance tracking system built with modern C++**
+**A clean, efficient, console-based attendance system built with modern C++**
 
 </div>
 
-## 📖 Overview
-This project is a complete Employee Attendance Management System implemented in C++. It features an intuitive command-line interface for managing employee check-ins/check-outs, calculating work hours, searching records, and generating detailed reports.
+## Overview
+A fully functional Employee Attendance Management System written in C++. It provides a simple command-line interface to:
+- Record employee check-in and check-out times
+- Calculate daily work hours automatically
+- Search employee attendance history
+- Generate detailed daily reports with totals and averages
+- View all employees and their departments
 
-All data is persistently stored in a simple text file (`attendance.txt`) using CSV format, ensuring easy backup and inspection.
+Data is stored in a plain text file (`attendance.txt`) using CSV format.
 
-## ✨ Key Features
-- **Check-In & Check-Out** → Accurate time recording with employee validation
-- **Automatic Work Hours Calculation** → Precise daily hours based on entry/exit times
-- **Employee Search** → Case-insensitive search with full attendance history and statistics
-- **Comprehensive Daily Reports** → Total hours, average per employee, and presence count
-- **Sample Data Initialization** → Auto-generates demo records on first run
-- **Clean & Modular Design** → Well-structured code with reusable functions
+## Key Features
+- Check-in & check-out with time validation
+- Automatic calculation of hours worked
+- Case-insensitive employee search
+- Comprehensive daily attendance reports
+- Sample data generated on first run
+- Clean, well-commented, and modular C++ code
+- No external dependencies
 
-## 🛠️ Tech Stack
+## Tech Stack
 - **Language**: Modern C++ (Standard Library only)
-- **Storage**: Plain text CSV file
-- **No external dependencies** → Pure vanilla C++
+- **Storage**: Plain text file (`attendance.txt`)
+- **Interface**: Console (CLI)
 
-## 🚀 Getting Started
+## How to Run
 
 ### Prerequisites
 - C++ compiler (g++, clang++, MSVC)
