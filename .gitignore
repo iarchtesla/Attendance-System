@@ -1,0 +1,23 @@
+# Compiled executables
+attendance
+attendance.exe
+*.exe
+*.out
+*.o
+*.obj
+
+# Build directories
+build/
+Debug/
+Release/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Optional: hide data file if you don't want to track personal data
+attendance.txt
