@@ -42,6 +42,12 @@ g++ AttendanceSystem.cpp -o attendance
 ./attendance          # Linux/macOS
 attendance.exe        # Windows
 
+git clone https://github.com/iarchtesla/Attendance-System.git
+cd Attendance-System
+g++ AttendanceSystem.cpp -o attendance
+./attendance          # Linux/macOS
+attendance.exe        # Windows
+
 Attendance-System/
 ├── AttendanceSystem.cpp   # Complete source code
 ├── attendance.txt         # Attendance records (auto-generated)
